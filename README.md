@@ -1,4 +1,4 @@
-## Object Detection on Thermal Images
+## Object Detection both on Thermal, monochrome, and RGB Images
 YOLO v3 object detection model both on RGB and Infrared video. When it comes to real-time object detection it puts out its result as jpg forms, which helps a server to load its result more easily.
 
 ![](example.png)
