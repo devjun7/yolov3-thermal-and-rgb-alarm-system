@@ -1,4 +1,4 @@
-## Object Detection both on Infrared, monochrome, and RGB Images
+## Object Detection on Infrared, monochrome, and RGB Images
 YOLO v3 object detection model both on RGB and Infrared video. When it comes to real-time object detection it puts out its result as jpg forms, which helps a server to load its result more easily.
 
 ![](example1.png)
