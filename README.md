@@ -13,8 +13,8 @@ YOLO v3 object detection model both on RGB and Infrared video. When it comes to 
 
 ### Run Code:
 
-#### To run on webcam
+#### - To run on webcam
 python detect.py --data data/coco.data --cfg cfg/yolov3.cfg --weights weights/yolov3.weights --source 0
 
-#### To run on video
+#### - To run on video
 python detect.py --data data/coco.data --cfg cfg/yolov3.cfg --weights weights/yolov3.weights
