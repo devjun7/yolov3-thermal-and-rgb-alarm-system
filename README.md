@@ -7,9 +7,9 @@ YOLO v3 Human, vehicle, animal detection model both on RGB and Infrared video. I
 
 - run pip install requirements, or click into the requriements.txt file for the Anaconda commands.
 
-- download pre-trained weight file (https://drive.google.com/file/d/1BRJDDCMRXdQdQs6-x-3PmlzcEuT9wxJV/view?usp=sharing)
+- download pre-trained weight file. (https://drive.google.com/file/d/1BRJDDCMRXdQdQs6-x-3PmlzcEuT9wxJV/view?usp=sharing)
 
-- place pre-trained weight file in weights folder
+- place pre-trained weight file in weights folder.
 
 ### Run Code:
 
