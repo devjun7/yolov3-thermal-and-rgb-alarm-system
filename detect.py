@@ -9,6 +9,7 @@ global detect_result
 
 def detect(save_txt=False, save_img=False):
         k = ''
+        global detect_result
         img_size = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
         out, source, weights, half, view_img = opt.output, opt.source, opt.weights, opt.half, opt.view_img
         webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
@@ -96,6 +97,7 @@ def detect(save_txt=False, save_img=False):
 
             # Process detections
             for i, det in enumerate(pred):  # detections per image\
+                time.sleep(0.001)
                 if webcam:  # batch_size >= 1
                     p, s, im0 = path[i], '%g:' % i, im0s[i]
                 else:
@@ -190,8 +192,6 @@ def detect(save_txt=False, save_img=False):
                         h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
                         vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*opt.fourcc), fps, (w, h))
                         vid_writer.write(im0)
-                #if cv2.waitKey(1) == 27:                            # Press Esc to quit
-                    #exit(0)
 
         if save_txt or save_img:
             print('Results saved to %s' % os.getcwd() + os.sep + out)
@@ -216,6 +216,5 @@ if __name__ == '__main__':
     parser.add_argument('--view-img', action='store_true', help='display results')
     opt = parser.parse_args()
     print(opt)
-
     with torch.no_grad():
         detect()
