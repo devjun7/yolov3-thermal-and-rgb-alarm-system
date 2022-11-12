@@ -5,6 +5,7 @@ from models import *  # set ONNX_EXPORT in models.py
 from utils.datasets import *
 from utils.utils import *
 from datetime import datetime
+global detect_result
 
 def detect(save_txt=False, save_img=False):
         k = ''
@@ -103,6 +104,9 @@ def detect(save_txt=False, save_img=False):
                 save_path = str(Path(out) / Path(p).name)
                 s += '%gx %g ' % img.shape[2:]  # print string
                 flag = False
+                p_num = 0
+                a_num = 0
+                v_num = 0
                 if det is not None and len(det):
                     # Rescale boxes from img_size to im0 size
                     det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
@@ -113,6 +117,12 @@ def detect(save_txt=False, save_img=False):
                             n = (det[:, -1] == c).sum()  # detections per class
                             s += '%g %ss, ' % (n, classes[int(c)])  # add to string
                             k += '_%g%s' % (n, classes[int(c)])
+                            if classes[int(c)] == "person":
+                                p_num = int(n)
+                            elif classes[int(c)] == "animal":
+                                a_num = int(n)
+                            elif classes[int(c)] == "vehicle":
+                                v_num = int(n)
                         else:
                             n = (det[:, -1] == c).sum()  # detections per class
                             s += '%g %ss, ' % (n, classes[int(c)])  # add to string
@@ -131,18 +141,37 @@ def detect(save_txt=False, save_img=False):
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d%s.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond, k)
                         cv2.imwrite(buf, im0)
+                        detect_result = {}
+                        detect_result["file_name"] = buf
+                        detect_result["person"] = p_num
+                        detect_result["animal"] = a_num
+                        detect_result["vehicle"] = v_num
+                        print(detect_result)
                         print('%s Done. (%.3fs)' % (s, time.time() - t))
                     else:
                         print('Done. (%.3fs)' % (time.time() - t))
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
                         cv2.imwrite(buf, im0)
+                        detect_result = {}
+                        detect_result["file_name"] = buf
+                        detect_result["person"] = p_num
+                        detect_result["animal"] = a_num
+                        detect_result["vehicle"] = v_num
+                        print(detect_result)
                 elif det is None:
                     now = datetime.now()
                     buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
-                    cv2.imwrite(buf, im0)  
+                    cv2.imwrite(buf, im0)
+                    detect_result = {}
+                    detect_result["file_name"] = buf
+                    detect_result["person"] = p_num
+                    detect_result["animal"] = a_num
+                    detect_result["vehicle"] = v_num
+                    print(detect_result)  
                     print('Done. (%.3fs)' % (time.time() - t))        
                 # print('%s Done. (%.3fs)' % (s, time.time() - t))
+
                 # Stream results
                 if view_img:
                     cv2.imshow(p, im0)
