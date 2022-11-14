@@ -142,7 +142,7 @@ def detect(save_txt=False, save_img=False):
                     if flag:
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d%s.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond, k)
-                        cv2.imwrite(buf, im0)
+                        cv2.imwrite(buf, im0) # capture the input
                         detect_result = {}
                         detect_result["file_name"] = buf
                         detect_result["person"] = p_num
@@ -154,7 +154,7 @@ def detect(save_txt=False, save_img=False):
                         print('Done. (%.3fs)' % (time.time() - t))
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
-                        cv2.imwrite(buf, im0)
+                        cv2.imwrite(buf, im0) # capture the input
                         detect_result = {}
                         detect_result["file_name"] = buf
                         detect_result["person"] = p_num
@@ -164,7 +164,7 @@ def detect(save_txt=False, save_img=False):
                 elif det is None:
                     now = datetime.now()
                     buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
-                    cv2.imwrite(buf, im0)
+                    cv2.imwrite(buf, im0) # capture the input
                     detect_result = {}
                     detect_result["file_name"] = buf
                     detect_result["person"] = p_num
@@ -176,7 +176,7 @@ def detect(save_txt=False, save_img=False):
 
                 # Stream results
                 if view_img:
-                    cv2.imshow(p, im0)
+                    cv2.imshow(p, im0) # show the output
                 # Save results (image with detections)
                 if save_img:
                     if dataset.mode == 'images':
