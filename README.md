@@ -18,3 +18,8 @@ python detect.py --data data/coco.data --cfg cfg/yolov3.cfg --weights weights/yo
 
 #### - To run on video
 python detect.py --data data/coco.data --cfg cfg/yolov3.cfg --weights weights/yolov3.weights
+
+#### - To run with UI
+npm install
+npm update
+npm start
