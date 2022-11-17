@@ -1,0 +1,215 @@
+/* Style */
+.App {
+  text-align: center;
+}
+
+body {
+  font-family: 'nanumsquare';
+}
+
+.container{
+  width: 100%;
+  height: 100vh;
+}
+
+
+/* 상단 (TOD 연결 상태, AI Version 선택, 경고기능 작동 여부, 경고기능 시간 설정) */
+.top-area {
+  display: grid;
+  grid-template-columns: 0.9fr 1.5fr 0.7fr 1.5fr 1.5fr 1.3fr 0fr 1.5fr 1.3fr 0fr 1fr;
+  background: black;
+  width: 98%;
+  /* height: 1vh; */
+  padding: 1%;
+  color: white;
+  font-weight: 600;
+  font-size: 2vmin;
+  align-items: center;
+  position: relative;
+}
+
+.top-element {
+  display: flex;
+  font-size: 2vmin;
+  align-items: center;
+}
+
+/* TOD 연결 상태 및 상태 박스들 (color 제어 용도) */
+.state-box {
+  background: red;
+  width: 5vw;
+  height: 2.2vh;
+  padding: 2%;
+}
+.red {
+  background: red;
+}
+.orange {
+  background: orange;
+}
+.green {
+  background: green;
+}
+
+/* 입력 박스 */
+.input-box {
+  width: 2.4vw;
+  height: 2.2vh;
+  font-weight: bold;
+  font-size: 2vmin;
+  align-items: center;
+}
+
+/* 입력 버튼 */
+.input-btn {
+  width: 3vw;
+  height: 3vh;
+  font-size: 1.3vmin;
+  cursor: pointer;
+}
+.input-btn:hover {
+  background: gray;
+}
+
+/* AI Version 선택 dropdown */
+.dropdown {
+  width: 150px;
+  user-select: none;
+  position: relative;
+}
+.dropdown .dropdown-btn {
+  background: #fff;
+  box-shadow: 3px 3px 10px 6px rgba(0, 0, 0, 0.06);
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dropdown .dropdown-content {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  padding: 3px;
+  background: #fff;
+  box-shadow: 3px 3px 10px 6px rgba(0, 0, 0, 0.06);
+  font-weight: bold;
+  font-size: 20px;
+  color: #333;
+  width: 95%;
+}
+.dropdown .dropdown-content .dropdown-item {
+  padding: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dropdown .dropdown-content .dropdown-item:hover {
+  background: gray;
+}
+
+.warning-function {
+  width: 10vw;
+  height: 2.2vh;
+  padding: 2%;
+  font-size: 2vmin;
+  display: flex;
+  align-items: center;
+  /* margin-left: 10%; */
+}
+.font-gray {
+  color: gray;
+}
+.font-red {
+  color: red;
+}
+
+/* 중단 (영상 재생, 상황 목록 출력) */
+.mid-area {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  background: black;
+  border: 1px solid white;
+  height: 76.1vh;
+  padding: 1%;
+  color: white;
+  font-weight: 600;
+  font-size: 1.3vmin;
+
+}
+
+.mid-video {
+  height:76.5vmin;
+  border-width: 1px 2px 1px 1px;
+  border-color: white;
+  border-style: solid double solid double;
+
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mid-log {
+  height:76.5vmin;
+  border-width: 1px 1px 1px 2px;
+  border-color: white;
+  border-style: solid double solid double;
+  overflow-y: scroll;
+  text-align: left;
+}
+
+/* 하단 (영상 정보, 검출 객체, 상황 정보) */
+.bottom-area {
+  background: black;
+  display: grid;
+  grid-template-columns: 1fr 0fr 0fr;
+  padding: 1%;
+  display: flex;
+  color: white;
+  font-weight: 600;
+  font-size: 2vmin;
+  align-items: center;
+  position: relative;
+}
+
+.bottom-element {
+  width: 20%;
+  height: 12vh;
+  border-width: 1px 1px 1px 1px;
+  border-color: white;
+  border-style: solid double solid double;
+}
+
+.bottom-display-info {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  width: 30%;
+  height: 12vh;
+  border-width: 1px 1px 1px 1px;
+  border-color: white;
+  border-style: solid double solid double;
+  align-items: center;
+  font-size: 4vmin;
+}
+
+.bottom-object {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 50%;
+  height: 12vh;
+  border-width: 1px 1px 1px 1px;
+  border-color: white;
+  border-style: solid double solid double;
+  align-items: center;
+  font-size: 4vmin;
+}
+
+.bottom-state-box {
+  display: grid;
+  width:100%;
+  height:100%;
+  align-items: center;
+  font-size: 8vmin;
+}
