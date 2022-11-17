@@ -2,51 +2,18 @@ import argparse
 from sys import platform
 
 from models import *  # set ONNX_EXPORT in models.py
-import websockets
-import asyncio
-import base64
-import numpy
-import json
-import logging
-import traceback
-import os
 from utils.datasets import *
 from utils.utils import *
 from datetime import datetime
-from websocket import *
+global detect_result
 
-
-
-async def detect(websocket, path, save_txt=False, save_img=False):
-    try:
-        # Websocket connection
-        data = await websocket.recv()
-        print(data)
-
-        # AIVersionList Send
-        await websocket.send(json.dumps({
-            "AIVersionList": ['v1.3', 'v1.2', 'v1.1']
-        }))
-
-        # AIVersion Receive
-        AI_version = await websocket.recv()
-        print(AI_version)
-
-        # Connection Request
-        connection = await websocket.recv()
-        print(connection)
-
-        fps_prevtime = 0
-        warning_buf = -1
-
+def detect(save_txt=False, save_img=False):
         k = ''
+        global detect_result
         img_size = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
         out, source, weights, half, view_img = opt.output, opt.source, opt.weights, opt.half, opt.view_img
         webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
-        _FPS = 70
-        human_3s = numpy.zeros(_FPS * 3)
-        animal_3s = numpy.zeros(_FPS * 3)
-        vehicle_3s = numpy.zeros(_FPS * 3)
+
         # Initialize
         device = torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
         if os.path.exists(out):
@@ -109,7 +76,7 @@ async def detect(websocket, path, save_txt=False, save_img=False):
 
         # Run inference
         t0 = time.time()
-        for index, (path, img, im0s, vid_cap) in enumerate(dataset):
+        for path, img, im0s, vid_cap in dataset:
             t = time.time()
 
             # Get detections
@@ -130,6 +97,7 @@ async def detect(websocket, path, save_txt=False, save_img=False):
 
             # Process detections
             for i, det in enumerate(pred):  # detections per image\
+                time.sleep(0.001)
                 if webcam:  # batch_size >= 1
                     p, s, im0 = path[i], '%g:' % i, im0s[i]
                 else:
@@ -138,7 +106,6 @@ async def detect(websocket, path, save_txt=False, save_img=False):
                 save_path = str(Path(out) / Path(p).name)
                 s += '%gx %g ' % img.shape[2:]  # print string
                 flag = False
-                # Initial data setting
                 p_num = 0
                 a_num = 0
                 v_num = 0
@@ -175,29 +142,41 @@ async def detect(websocket, path, save_txt=False, save_img=False):
                     if flag:
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d%s.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond, k)
-                        cv2.imwrite(buf, im0)
-                        with open(buf, "rb") as image_file:
-                            image_base64 = image_to_binary64(image_file)
+                        cv2.imwrite(buf, im0) # capture the input
+                        detect_result = {}
+                        detect_result["file_name"] = buf
+                        detect_result["person"] = p_num
+                        detect_result["animal"] = a_num
+                        detect_result["vehicle"] = v_num
+                        print(detect_result)
                         print('%s Done. (%.3fs)' % (s, time.time() - t))
                     else:
+                        print('Done. (%.3fs)' % (time.time() - t))
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
-                        cv2.imwrite(buf, im0)
-                        with open(buf, "rb") as image_file:
-                            image_base64 = image_to_binary64(image_file)
-                        print('Done. (%.3fs)' % (time.time() - t))
+                        cv2.imwrite(buf, im0) # capture the input
+                        detect_result = {}
+                        detect_result["file_name"] = buf
+                        detect_result["person"] = p_num
+                        detect_result["animal"] = a_num
+                        detect_result["vehicle"] = v_num
+                        print(detect_result)
                 elif det is None:
                     now = datetime.now()
                     buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
-                    cv2.imwrite(buf, im0)
-                    with open(buf, "rb") as image_file:
-                        image_base64 = image_to_binary64(image_file)
-                    print('Done. (%.3fs)' % (time.time() - t))
+                    cv2.imwrite(buf, im0) # capture the input
+                    detect_result = {}
+                    detect_result["file_name"] = buf
+                    detect_result["person"] = p_num
+                    detect_result["animal"] = a_num
+                    detect_result["vehicle"] = v_num
+                    print(detect_result)  
+                    print('Done. (%.3fs)' % (time.time() - t))        
                 # print('%s Done. (%.3fs)' % (s, time.time() - t))
+
                 # Stream results
                 if view_img:
-                #     cv2.imshow(p, im0)
-                    pass
+                    cv2.imshow(p, im0) # show the output
                 # Save results (image with detections)
                 if save_img:
                     if dataset.mode == 'images':
@@ -207,91 +186,18 @@ async def detect(websocket, path, save_txt=False, save_img=False):
                             vid_path = save_path
                             if isinstance(vid_writer, cv2.VideoWriter):
                                 vid_writer.release()  # release previous video writer
-                
+
                         fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                        w = int(vid_cap.get(cv2.CAP_PROP_fps_WIDTH))
-                        h = int(vid_cap.get(cv2.CAP_PROP_fps_HEIGHT))
+                        w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                        h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
                         vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*opt.fourcc), fps, (w, h))
                         vid_writer.write(im0)
 
-            # Warning(RTX 3070 max accurate:0.80)
-            warning_change = 0
-
-            if p_num != 0:
-                human_3s[index % (_FPS * 3)] = 1
-            else:
-                human_3s[index % (_FPS * 3)] = 0
-            if a_num != 0:
-                animal_3s[index % (_FPS * 3)] = 1
-            else:
-                animal_3s[index % (_FPS * 3)] = 0
-            if v_num != 0:
-                vehicle_3s[index % (_FPS * 3)] = 1
-            else:
-                vehicle_3s[index % (_FPS * 3)] = 0
-            if numpy.average(human_3s) > 0.6:
-                warning_human = 1
-            else:
-                warning_human = 0
-            if numpy.average(animal_3s) > 0.6:
-                warning_animal = 1
-            else:
-                warning_animal = 0
-            if numpy.average(human_3s) > 0.6:
-                warning_vehicle = 1
-            else:
-                warning_vehicle = 0
-            if warning_human + warning_animal + warning_vehicle > 0:
-                warning_state = 1
-                warning_on = 1
-                if warning_buf != warning_state:
-                    warning_change = 1
-            elif p_num != 0 or a_num != 0 or v_num != 0:
-                warning_state = 0
-                warning_on = 0
-                if warning_buf != warning_state:
-                    warning_change = 1
-            else:
-                warning_state = -1
-                warning_on = 0
-                if warning_buf != warning_state:
-                    warning_change = 1
-            warning_buf = warning_state
-
-
-            # print(numpy.average(human_3s))
-            # Send image
-            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-            result, imgencode = cv2.imencode('.jpg', im0, encode_param)
-            encoded_img = numpy.array(imgencode)
-            stringData = base64.b64encode(encoded_img)
-            if fps_prevtime == 0:
-                fps = 0
-            else:
-                fps_curtime = time.time()
-                # print("curtime: ", fps_curtime)
-                fps = int(1 / (fps_curtime - fps_prevtime))
-
-            jsonData = image_to_json(stringData, p_num, a_num, v_num, fps, warning_human, warning_animal,
-                                     warning_vehicle, warning_state, warning_change, warning_on)
-            await websocket.send(jsonData)
-            _data = await websocket.recv()
-            # print(_data)
-            if _data == "AIVersion":
-                AI_version = await websocket.recv()
-                print(AI_version)
-            if _data == 'exit':
-                print("client disconnected")
-                break
-            fps_prevtime = time.time()
-            # print("prevtime: ", fps_prevtime)
         if save_txt or save_img:
             print('Results saved to %s' % os.getcwd() + os.sep + out)
             if platform == 'darwin':  # MacOS
                 os.system('open ' + out + ' ' + save_path)
             print('Done. (%.3fs)' % (time.time() - t0))
-    except Exception as e:
-        logging.error(traceback.format_exc())
 
 
 if __name__ == '__main__':
@@ -310,11 +216,5 @@ if __name__ == '__main__':
     parser.add_argument('--view-img', action='store_true', help='display results')
     opt = parser.parse_args()
     print(opt)
-
     with torch.no_grad():
-        print("connect waiting...")
-
-        start_server = websockets.serve(detect, "localhost", 5000); # waits server
-        asyncio.get_event_loop().run_until_complete(start_server);
-        asyncio.get_event_loop().run_forever();
-
+        detect()
