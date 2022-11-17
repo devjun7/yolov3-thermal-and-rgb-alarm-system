@@ -21,5 +21,7 @@ python detect.py --data data/coco.data --cfg cfg/yolov3.cfg --weights weights/yo
 
 #### - To run with UI
 npm install
+
 npm update
+
 npm start
