@@ -176,28 +176,23 @@ async def detect(websocket, path, save_txt=False, save_img=False):
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d%s.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond, k)
                         cv2.imwrite(buf, im0)
-                        with open(buf, "rb") as image_file:
-                            image_base64 = image_to_binary64(image_file)
                         print('%s Done. (%.3fs)' % (s, time.time() - t))
                     else:
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
                         cv2.imwrite(buf, im0)
-                        with open(buf, "rb") as image_file:
-                            image_base64 = image_to_binary64(image_file)
                         print('Done. (%.3fs)' % (time.time() - t))
                 elif det is None:
                     now = datetime.now()
                     buf = 'output/%d-%d-%d--%d-%d-%d-%d.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
                     cv2.imwrite(buf, im0)
-                    with open(buf, "rb") as image_file:
-                        image_base64 = image_to_binary64(image_file)
                     print('Done. (%.3fs)' % (time.time() - t))
                 # print('%s Done. (%.3fs)' % (s, time.time() - t))
                 # Stream results
                 if view_img:
-                #     cv2.imshow(p, im0)
+                #    cv2.imshow(p, im0)
                     pass
+                    
                 # Save results (image with detections)
                 if save_img:
                     if dataset.mode == 'images':
