@@ -1,7 +1,7 @@
 ## Human, vehicle, animal Detector on Infrared, monochrome, and RGB video with UI
 YOLO v3 Human, vehicle, animal detection model both on RGB and Infrared video. It only detects Human, vehicle, and animal. And it can detect from various angle for the people who uses this model for specific purpose. For those who wants to connect this model to server it puts out its result as images in jpg forms with its file name telling what it detected and its time. And detection result is saved at the global dictionary variable named "detect_result". By that it helps a server to load its result more easily.
 
-![](example1.png)
+![](example.png)
 
 ### Instructions
 
