@@ -40,10 +40,11 @@ async def detect(websocket, path, save_txt=False, save_img=False):
         warning_buf = -1
 
         k = ''
-        img_size = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
+        # img_size = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
+        img_size = (320, 192)
         out, source, weights, half, view_img = opt.output, opt.source, opt.weights, opt.half, opt.view_img
         webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
-        _FPS = 70
+        _FPS = 20
         human_3s = numpy.zeros(_FPS * 3)
         animal_3s = numpy.zeros(_FPS * 3)
         vehicle_3s = numpy.zeros(_FPS * 3)
@@ -148,7 +149,7 @@ async def detect(websocket, path, save_txt=False, save_img=False):
 
                     # Print results
                     for c in det[:, -1].unique():
-                        if int(c) <= 8 or (14 <= int(c) and int(c) <= 23):
+                        if  save_img or view_img and int(c) <= 8 or (14 <= int(c) and int(c) <= 23):
                             n = (det[:, -1] == c).sum()  # detections per class
                             s += '%g %ss, ' % (n, classes[int(c)])  # add to string
                             k += '_%g%s' % (n, classes[int(c)])
@@ -175,6 +176,7 @@ async def detect(websocket, path, save_txt=False, save_img=False):
                     if flag:
                         now = datetime.now()
                         buf = 'output/%d-%d-%d--%d-%d-%d-%d%s.jpg' % (now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond, k)
+                        plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
                         cv2.imwrite(buf, im0)
                         print('%s Done. (%.3fs)' % (s, time.time() - t))
                     else:
@@ -224,15 +226,15 @@ async def detect(websocket, path, save_txt=False, save_img=False):
                 vehicle_3s[index % (_FPS * 3)] = 1
             else:
                 vehicle_3s[index % (_FPS * 3)] = 0
-            if numpy.average(human_3s) > 0.6:
+            if numpy.average(human_3s) > 0.2:
                 warning_human = 1
             else:
                 warning_human = 0
-            if numpy.average(animal_3s) > 0.6:
+            if numpy.average(animal_3s) > 0.2:
                 warning_animal = 1
             else:
                 warning_animal = 0
-            if numpy.average(human_3s) > 0.6:
+            if numpy.average(human_3s) > 0.2:
                 warning_vehicle = 1
             else:
                 warning_vehicle = 0
@@ -256,7 +258,7 @@ async def detect(websocket, path, save_txt=False, save_img=False):
 
             # print(numpy.average(human_3s))
             # Send image
-            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 100]
             result, imgencode = cv2.imencode('.jpg', im0, encode_param)
             encoded_img = numpy.array(imgencode)
             stringData = base64.b64encode(encoded_img)
