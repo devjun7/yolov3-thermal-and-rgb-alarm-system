@@ -132,12 +132,12 @@ def detect(save_txt=False, save_img=False):
 
                     # Write results
                     for *xyxy, conf, _, cls in det:
+                        label = '%s %.2f' % (classes[int(cls)], conf)
+                        plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
                         if save_txt:  # Write to file
                             with open(save_path + '.txt', 'a') as file:
                                 file.write(('%g ' * 6 + '\n') % (*xyxy, cls, conf))
                         if save_img or view_img and (int(c) <= 8 or (14 <= int(c) and int(c) <= 23)):  # Add bbox to image
-                            label = '%s %.2f' % (classes[int(cls)], conf)
-                            plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
                             flag = True
                     if flag:
                         now = datetime.now()
