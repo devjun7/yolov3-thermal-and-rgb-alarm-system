@@ -16,10 +16,9 @@ body {
 /* 상단 (TOD 연결 상태, AI Version 선택, 경고기능 작동 여부, 경고기능 시간 설정) */
 .top-area {
   display: grid;
-  grid-template-columns: 0.9fr 1.5fr 0.7fr 1.5fr 1.5fr 1.3fr 0fr 1.5fr 1.3fr 0fr 1fr;
+  grid-template-columns: 1.3fr 2fr 1fr 2fr 1.8fr 0fr 1.4fr 2.5fr 0fr 1fr 0fr;
   background: black;
   width: 98%;
-  /* height: 1vh; */
   padding: 1%;
   color: white;
   font-weight: 600;
@@ -49,6 +48,9 @@ body {
 }
 .green {
   background: green;
+}
+.gray {
+  background: gray;
 }
 
 /* 입력 박스 */
@@ -108,7 +110,7 @@ body {
 }
 
 .warning-function {
-  width: 10vw;
+  width: 12vw;
   height: 2.2vh;
   padding: 2%;
   font-size: 2vmin;
@@ -121,6 +123,13 @@ body {
 }
 .font-red {
   color: red;
+}
+.font-white {
+  color: white;
+  
+}
+.font-black {
+  color: black;
 }
 
 /* 중단 (영상 재생, 상황 목록 출력) */
@@ -172,6 +181,7 @@ img {
   font-size: 2vmin;
   align-items: center;
   position: relative;
+  height: 9.8vh;
 }
 
 .bottom-element {
@@ -211,5 +221,5 @@ img {
   width:100%;
   height:100%;
   align-items: center;
-  font-size: 8vmin;
+  font-size: 7vmin;
 }
