@@ -40,11 +40,10 @@ async def detect(websocket, path, save_txt=False, save_img=False):
         warning_buf = -1
 
         k = ''
-        # img_size = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
-        img_size = (320, 192)
+        img_size = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
         out, source, weights, half, view_img = opt.output, opt.source, opt.weights, opt.half, opt.view_img
         webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
-        _FPS = 30
+        _FPS = 25
         human_3s = numpy.zeros(_FPS * 3)
         animal_3s = numpy.zeros(_FPS * 3)
         vehicle_3s = numpy.zeros(_FPS * 3)
@@ -226,15 +225,15 @@ async def detect(websocket, path, save_txt=False, save_img=False):
                 vehicle_3s[index % (_FPS * 3)] = 1
             else:
                 vehicle_3s[index % (_FPS * 3)] = 0
-            if numpy.average(human_3s) > 0.2:
+            if numpy.average(human_3s) > 0.3:
                 warning_human = 1
             else:
                 warning_human = 0
-            if numpy.average(animal_3s) > 0.2:
+            if numpy.average(animal_3s) > 0.3:
                 warning_animal = 1
             else:
                 warning_animal = 0
-            if numpy.average(human_3s) > 0.2:
+            if numpy.average(human_3s) > 0.3:
                 warning_vehicle = 1
             else:
                 warning_vehicle = 0
