@@ -1,10 +1,5 @@
 import React from 'react'
 
-// isChangeState 가 true면 상황로그 리스트에 추가
-
-// 추가로 구현해야할 것
-// 상황 로그 리스트의 인덱스를 계산하여 어느 시점이 지나면 앞에 어느 정도 인덱스 삭제
-
 export default function List({messages, setMessages, warningState, isChangeState, setIsChangeState}) {
   // 현재 시간 계산 함수
   function logTimer() {
@@ -28,14 +23,25 @@ export default function List({messages, setMessages, warningState, isChangeState
     let logTime = logTimer();
 
     if (warningState === -1) {
-      setMessages([...messages, logTime + " 정상 상황"])
+      setMessages([logTime + " 정상 상황", ...messages]);
 
     } else if (warningState === 0) {
-      setMessages([...messages, logTime + " 이상 상황 ◎"])
+      setMessages([logTime + " 이상 상황 ◎", ...messages]);
 
     } else if (warningState === 1) {
-      setMessages([...messages, logTime + " 경고 발생 ◇◆◇"])
+      setMessages([logTime + " 경고 발생 ◇◆◇", ...messages]);
 
+    }
+
+    if (messages.length > 50) {
+      console.log("-----log list cleaning-----")
+      try {
+        setMessages(messages.splice(1, 40));
+
+      } catch(error) {
+        console.log(error + "-----log list not full-----");
+
+      }
     }
   }
 

@@ -1,7 +1,6 @@
 import React from 'react'
 import BottomStateBox from './BottomStateBox';
 
-
 export default function BottomState({ warningState }) {
   return (
     <div className='bottom-element'>
